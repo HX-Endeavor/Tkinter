@@ -1,0 +1,115 @@
+TCP通信
+-------------------------------------
+导入库
+import  socket
+import struct  #16进制
+-------------服务端---------------
+定义IP和端口号
+host='127.0.0.1'
+port=8080
+
+建立套接字
+sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+绑定IP和端口号
+sock.bind((host,port))
+
+建立超时时间
+sock.settimeout(3) #等待3秒
+
+建立监听个数（即最大连接数）
+sock.listen(5)
+
+建立连接请求
+#其中adrr返回的值为客户端的IP和端口号
+conn,adrr=sock.accept()
+
+发送信息
+m=123
+conn.send(m)
+
+发送16进制信息
+req = struct.pack('5B', int('AA', 16), int('BB', 16), int('CC', 16), 0X01, 0XAB)
+conn.send(req)
+
+发送汉字信息
+mm='你好'
+conn.send(mm.encode('utf-8'))
+
+接收信息
+data=conn.recv(1024)
+
+若为16进制（hex）或ascii要对其进行转换解码,导入包
+import binascii
+rece = str(binascii.b2a_hex(data))
+
+若为汉字对其进行格式转换
+data=data.decode('utf-8)
+
+关闭连接
+conn.close()
+
+关闭套接字
+sock.close()
+
+----------------客户端----------------
+
+服务端的IP和端口号
+host='127.0.0.1'
+port=8080
+
+建立套接字
+sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+连接服务端的IP和端口
+sock.connect((host,port))
+
+发送信息
+m=123
+sock.send(m)
+
+发送16进制信息
+req = struct.pack('5B', int('AA', 16), int('BB', 16), int('CC', 16), 0X01, 0XAB)
+sock.send(req)
+
+发送汉字信息
+mm='你好'
+sock.send(mm.encode('utf-8'))
+
+接收信息
+data=sock.recv(1024)
+
+若为16进制（hex）或ascii要对其进转换或行解码,导入包
+import binascii
+rece = str(binascii.b2a_hex(data))
+
+若为汉字对其进行格式转换
+data=data.decode('utf-8)
+
+关闭套接字
+sock.close()
+
+----------------多线程通信------------------
+有了多线程可以同时进行接受和发送
+导入包
+import threading
+
+建立多线程
+T1=threading.Thread(target=函数)
+
+启动线程
+T1.start()
+
+------------------------------------
+//导入库
+import struct
+
+req = struct.pack('5B', int('FC', 16), int('00', 16), int('00', 16), int('00', 16),int('00', 16))
+conn.send(req)
+即 发送16进制数
+
+//导入库
+import binascii
+
+str(binascii.b2a_hex(data))
+即 将16进制ascii码转换成字符串
